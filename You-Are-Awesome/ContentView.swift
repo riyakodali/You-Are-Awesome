@@ -48,43 +48,15 @@ struct ContentView: View {
                                     "Fabulous?, That's You!",
                                     "You Make Me Smile!", "When the Genius Bar Needs Help, They Call You!"]
                     
+                    lastMessageNumber = nonRepeatingRandom(lastNumber: lastMessageNumber, upperBound: messages.count-1)
+                    messageString = messages[lastMessageNumber]
                     
-                    var messageNumber: Int
-                    repeat {
-                        messageNumber = Int.random(in: 0...messages.count-1)
-                    } while messageNumber == lastMessageNumber
-                    messageString = messages[messageNumber]
-                    lastMessageNumber = messageNumber
+                    lastImageNumber = nonRepeatingRandom(lastNumber: lastImageNumber, upperBound: 9)
+                    imageName = "image\(lastImageNumber)"
                     
-                                        
-                    var imageNumber: Int
-                    repeat {
-                        imageNumber = Int.random(in: 0...9)
-                    } while imageNumber == lastImageNumber
-                    imageName = "image\(imageNumber)"
-                    lastImageNumber = imageNumber
-                    
-                    
-                    var soundNumber: Int
-                    repeat {
-                        soundNumber = Int.random(in: 0...5)
-                    } while soundNumber == lastSoundNumber
-                    lastImageNumber = soundNumber
-                    let soundName = "sound\(soundNumber)"
-                    
-                    guard let soundFile = NSDataAsset(name: soundName) else{
-                        print("😡 Could not read file names \(soundName)")
-                        return
-                    }
-                    do {
-                        audioPlayer = try AVAudioPlayer(data: soundFile.data)
-                        audioPlayer.play()
+                    lastSoundNumber = nonRepeatingRandom(lastNumber: lastSoundNumber, upperBound: 5)
+                    playSound(soundName: "sound\(lastSoundNumber)")
 
-                    } catch {
-                        print("😡 ERROR: \(error.localizedDescription) creating audioPlayer.")
-                    }
-                    
-                    
                 }
                 .buttonStyle(.borderedProminent)
                 
@@ -93,6 +65,29 @@ struct ContentView: View {
             .tint(.blue)
             
             
+        }
+    }
+    
+    func nonRepeatingRandom(lastNumber: Int, upperBound: Int) -> Int {
+        var newNumber: Int
+        repeat {
+            newNumber = Int.random(in: 0...upperBound)
+        } while newNumber == lastNumber
+        return newNumber
+    }
+    
+    
+    func playSound(soundName: String){
+        guard let soundFile = NSDataAsset(name: soundName) else{
+            print("😡 Could not read file names \(soundName)")
+            return
+        }
+        do {
+            audioPlayer = try AVAudioPlayer(data: soundFile.data)
+            audioPlayer.play()
+
+        } catch {
+            print("😡 ERROR: \(error.localizedDescription) creating audioPlayer.")
         }
     }
 }
